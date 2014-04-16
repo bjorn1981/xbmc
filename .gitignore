@@ -502,6 +502,26 @@ lib/cpluff/stamp-h1
 # /skin/PM3.HD/media/flagging/video/
 /skin/PM3.HD/media/flagging/video/Thumbs.db
 
+# /tools/android/packaging/xbmc/res/
+/tools/android/packaging/xbmc/res/raw/
+
+# /tools/depends/native/libsdl_image-native/
+/tools/depends/native/libsdl_image-native/.gitignore
+
+# /tools/depends/target/android-sources-ics/
+/tools/depends/target/android-sources-ics/android-source/
+
+# /tools/depends/target/libnfs/arm-linux-androideabi-android-14/
+/tools/depends/target/libnfs/arm-linux-androideabi-android-14/
+
+# xbmc dependency directory made via xbmc.mk
+/xbmc-deps/
+
+# xbmc tarballs directory made via xbmc.mk
+/xbmc-tarballs/
+
+
+
 # /tools/Changelog/
 /tools/Changelog/Changelog.txt
 /tools/Changelog/svn_log.xml
@@ -578,6 +598,7 @@ lib/cpluff/stamp-h1
 /xbmc/cores/dvdplayer/DVDCodecs/Makefile
 /xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
 /xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile
 /xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
 /xbmc/cores/dvdplayer/DVDDemuxers/Makefile
 /xbmc/cores/dvdplayer/DVDSubtitles/Makefile
