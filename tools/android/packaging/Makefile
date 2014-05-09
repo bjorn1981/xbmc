@@ -50,6 +50,8 @@ ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
 GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
 endif
 
+LOCAL_REV=$(shell git rev-parse --short=7 HEAD)
+
 all: package
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM)/,$(PLATFORM_OBJS))
 DSTLIBS = $(CPU)/lib/libxbmc.so $(addprefix $(CPU)/lib/,$(OBJS)) $(addprefix $(CPU)/lib/,$(PLATFORM_OBJS))
@@ -70,9 +72,9 @@ package: extras
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
 	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
 	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(CPU)-unaligned.apk androiddebugkey
-	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(CPU)-debug.apk
+	@$(ZIPALIGN) -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(LOCAL_REV)-debug.apk
 	@rm images/xbmcapp-debug-$(CPU)-unaligned.apk
-	@echo "$(XBMCROOT)/xbmcapp-$(CPU)-debug.apk created"
+	@echo "$(XBMCROOT)/xbmcapp-$(LOCAL_REV)-debug.apk created"
 
 extras: libs
 	rm -rf xbmc/assets
