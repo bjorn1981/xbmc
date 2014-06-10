@@ -174,6 +174,7 @@ namespace INFO
 #define SYSTEM_HAS_PVR              186
 #define SYSTEM_STARTUP_WINDOW       187
 #define SYSTEM_STEREOSCOPIC_MODE    188
+#define SYSTEM_BUILD_VERSION_SHORT  189
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -367,7 +368,7 @@ namespace INFO
 #define SYSTEM_CPUFREQUENCY         656
 #define SYSTEM_SCREEN_RESOLUTION    659
 #define SYSTEM_VIDEO_ENCODER_INFO   660
-#define SYSTEM_KERNEL_VERSION       667
+#define SYSTEM_OS_VERSION_INFO      667
 #define SYSTEM_FREE_SPACE           679
 #define SYSTEM_USED_SPACE           680
 #define SYSTEM_TOTAL_SPACE          681
@@ -389,6 +390,7 @@ namespace INFO
 #define SYSTEM_FRIENDLY_NAME        716
 #define SYSTEM_SCREENSAVER_ACTIVE   717
 #define SYSTEM_ADDON_VERSION        718
+#define SYSTEM_DPMS_ACTIVE          719
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -784,6 +786,7 @@ public:
   int GetPlayTimeRemaining() const;
   int GetTotalPlayTime() const;
   CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
+  std::string GetVersionShort(void);
   CStdString GetVersion();
   CStdString GetBuild();
 

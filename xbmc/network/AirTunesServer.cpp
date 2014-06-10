@@ -296,6 +296,8 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
 void shairplay_log(void *cls, int level, const char *msg)
 {
   int xbmcLevel = LOGINFO;
+  if(!g_advancedSettings.CanLogComponent(LOGAIRTUNES))
+    return;
 
   switch(level)
   {
@@ -413,7 +415,7 @@ CAirTunesServer::CAirTunesServer(int port, bool nonlocal)
   m_port = port;
   m_pLibShairplay = new DllLibShairplay();
   m_pPipe         = new XFILE::CPipeFile;  
-  CAnnouncementManager::AddAnnouncer(this);
+  CAnnouncementManager::Get().AddAnnouncer(this);
 }
 
 CAirTunesServer::~CAirTunesServer()
@@ -424,7 +426,7 @@ CAirTunesServer::~CAirTunesServer()
   }
   delete m_pLibShairplay;
   delete m_pPipe;
-  CAnnouncementManager::RemoveAnnouncer(this);
+  CAnnouncementManager::Get().RemoveAnnouncer(this);
 }
 
 bool CAirTunesServer::Initialize(const CStdString &password)
@@ -455,7 +457,7 @@ bool CAirTunesServer::Initialize(const CStdString &password)
       unsigned short port = (unsigned short)m_port;
       
       m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_WARNING);
-      if(g_advancedSettings.m_logEnableAirtunes)
+      if(g_advancedSettings.CanLogComponent(LOGAIRTUNES))
       {
         m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_DEBUG);
       }

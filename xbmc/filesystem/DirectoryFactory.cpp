@@ -24,7 +24,6 @@
 #include "network/Network.h"
 #include "system.h"
 #include "DirectoryFactory.h"
-#include "HDDirectory.h"
 #include "SpecialProtocolDirectory.h"
 #include "MultiPathDirectory.h"
 #include "StackDirectory.h"
@@ -46,6 +45,11 @@
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 
+#ifdef TARGET_POSIX
+#include "posix/PosixDirectory.h"
+#elif defined(TARGET_WINDOWS)
+#include "win32/Win32Directory.h"
+#endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
 #include "windows/WINSMBDirectory.h"
@@ -135,7 +139,13 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 
   CStdString strProtocol = url.GetProtocol();
 
-  if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+#ifdef TARGET_POSIX
+  if (strProtocol.size() == 0 || strProtocol == "file") return new CPosixDirectory();
+#elif defined(TARGET_WINDOWS)
+  if (strProtocol.size() == 0 || strProtocol == "file") return new CWin32Directory();
+#else
+#error Local directory access is not implemented for this platform
+#endif
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
   if (strProtocol == "sources") return new CSourcesDirectory();
   if (strProtocol == "addons") return new CAddonsDirectory();
