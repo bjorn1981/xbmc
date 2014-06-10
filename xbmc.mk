@@ -14,14 +14,15 @@ endif
 LOCAL_PATH := $(shell pwd)
 
 TARGET_XBMC_SRC   := $(LOCAL_PATH)
+TARGET_ANDROID_SRC := //elmo/source/jellybean
 
 # User must set TOOLCHAIN, SDK_PATH, and NDK_PATH to their desired directories for compilation
 # Examples seen below
 
 DEPS_FULL         := $(LOCAL_PATH)/tools/depends
-TOOLCHAIN         := //android/matricom/prebuilts/gcc/linux-x86/arm/android-14
-SDK_PATH          := //android/matricom/prebuilts/sdk
-NDK_PATH          := //android/matricom/ndk
+TOOLCHAIN         := $(TARGET_ANDROID_SRC)/prebuilts/gcc/linux-x86/arm/android-14
+SDK_PATH          := $(TARGET_ANDROID_SRC)/prebuilts/sdk
+NDK_PATH          := $(TARGET_ANDROID_SRC)/ndk
 PREFIX            := $(LOCAL_PATH)/xbmc-deps
 TARBALLS          := $(LOCAL_PATH)/xbmc-tarballs
 PLATFORM          := android-17
@@ -84,7 +85,6 @@ bootstrap:
 	$(bootstrap)
 
 configure: 
-	$(bootstrap)
 	$(configure)
 
 dependencies:
