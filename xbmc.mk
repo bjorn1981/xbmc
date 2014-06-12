@@ -108,3 +108,24 @@ clobber:
 
 reset:
 	$(reset)
+
+help:
+	@echo "==================================================================================="
+	@echo "*************Makefile for compiling XBMC for Android (ARM architecture)************"
+	@echo "make -f xbmc.mk <optional arguments>:"
+	@echo "bootstrap: 	Runs bootstrap for dependencies"
+	@echo "configure: 	Configures environment for xbmc compilation with the following variables:"
+	@echo "			    --with-toolchain=$(TOOLCHAIN)"
+	@echo "			    --host=arm-linux-androideabi"
+	@echo "			    --with-sdk-path=$(SDK_PATH)"
+	@echo "			    --with-ndk=$(NDK_PATH)"
+	@echo "			    --prefix=$(PREFIX)"
+	@echo "			    --with-tarballs=$(TARBALLS)"
+	@echo "dependencies: 	Runs @bootstrap and @configure as well as builds the dependencies"
+	@echo "module: 		Compiles libxbmc"
+	@echo "xbmc: 		Compiles xbmc"
+	@echo "apk: 		Compiles xbmc and packages it into an Android package (apk)"
+	@echo ""
+	@echo "If no argument is supplied the order of calls is as follows:"
+	@echo "		bootstrap->configure->dependencies->module->xbmc->apk"
+	@echo "==================================================================================="
