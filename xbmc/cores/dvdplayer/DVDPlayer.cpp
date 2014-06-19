@@ -1706,9 +1706,11 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current)
     {
       if(     current.player == DVDPLAYER_AUDIO)
         setclock = m_clock.GetMaster() == MASTER_CLOCK_AUDIO
-                || m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF;
+                || m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF
+                || !m_CurrentVideo.inited;
       else if(current.player == DVDPLAYER_VIDEO)
-        setclock = m_clock.GetMaster() == MASTER_CLOCK_VIDEO;
+        setclock = m_clock.GetMaster() == MASTER_CLOCK_VIDEO
+                || !m_CurrentAudio.inited;
     }
     else
     {
@@ -2966,7 +2968,6 @@ bool CDVDPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
 
   /* audio normally won't consume full cpu, so let it have prio */
   m_dvdPlayerAudio.SetPriority(GetPriority()+1);
-  CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = GetAudioStream();
   return true;
 }
 
@@ -3025,7 +3026,6 @@ bool CDVDPlayer::OpenSubtitleStream(CDVDStreamInfo& hint)
   if(!OpenStreamPlayer(m_CurrentSubtitle, hint, true))
     return false;
 
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = GetSubtitle();
   return true;
 }
 

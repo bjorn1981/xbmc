@@ -741,11 +741,11 @@ CGUIInfoManager::Property::Property(const CStdString &property, const CStdString
   CUtil::SplitParams(parameters, params);
 }
 
-const CStdString &CGUIInfoManager::Property::param(unsigned int n /* = 0 */) const
+const std::string &CGUIInfoManager::Property::param(unsigned int n /* = 0 */) const
 {
   if (n < params.size())
     return params[n];
-  return StringUtils::EmptyString;
+  return StringUtils::Empty;
 }
 
 unsigned int CGUIInfoManager::Property::num_params() const
@@ -1033,7 +1033,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
       }
       if (prop.name == "property")
       {
-        if (prop.param().Equals("fanart_image"))
+        if (prop.param() == "fanart_image")
           return AddMultiInfo(GUIInfo(PLAYER_ITEM_ART, ConditionalStringParameter("fanart")));
         return AddListItemProp(prop.param(), MUSICPLAYER_PROPERTY_OFFSET);
       }
@@ -1089,15 +1089,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
       if (prop.name == "sortdirection")
       {
         SortOrder order = SortOrderNone;
-        if (prop.param().Equals("ascending"))
+        if (StringUtils::EqualsNoCase(prop.param(), "ascending"))
           order = SortOrderAscending;
-        else if (prop.param().Equals("descending"))
+        else if (StringUtils::EqualsNoCase(prop.param(), "descending"))
           order = SortOrderDescending;
         return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
       }
       else if (prop.name == "sort")
       {
-        if (prop.param().Equals("songrating"))
+        if (StringUtils::EqualsNoCase(prop.param(), "songrating"))
           return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, SortByRating));
       }
     }
@@ -1227,9 +1227,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
         else
         {
           int playlistid = PLAYLIST_NONE;
-          if (prop.param().Equals("video"))
+          if (StringUtils::EqualsNoCase(prop.param(), "video"))
             playlistid = PLAYLIST_VIDEO;
-          else if (prop.param().Equals("music"))
+          else if (StringUtils::EqualsNoCase(prop.param(), "music"))
             playlistid = PLAYLIST_MUSIC;
 
           if (playlistid > PLAYLIST_NONE)
@@ -1316,7 +1316,7 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
   }
   if (info.name == "property" && info.num_params() == 1)
   {
-    if (info.param().Equals("fanart_image"))
+    if (info.param() == "fanart_image")
       return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
     return AddListItemProp(info.param());
   }
@@ -1651,7 +1651,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     if(g_application.m_pPlayer->IsPlaying())
     {
       SPlayerAudioStreamInfo info;
-      g_application.m_pPlayer->GetAudioStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream, info);
+      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
       strLabel = info.language;
     }
     break;
@@ -1663,16 +1663,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case VIDEOPLAYER_SUBTITLES_LANG:
-    // use g_settings.m_currentVideoSettings.m_SubtitleOn and g_settings.m_currentVideoSettings.m_SubtitleStream
-    // instead of g_application.m_pPlayer->GetSubtitleVisible and g_application.m_pPlayer->GetSubtitle()
-    // because when we switch subtitles there is few frames when weird things happen on subtitles switch with latter:
-    //  - when we switch from one sub to another, for few frames (time to handle message, close old and open new subs)
-    //    g_application.m_pPlayer->GetSubtitle() will return last of sub streams (that's how CSelectionStreams::IndexOf work for -1 index)
-    //  - when we toggle disable/enable subs there will be few frames before message will be handled
     if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
     {
       SPlayerSubtitleStreamInfo info;
-      g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
+      g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
       strLabel = info.language;
     }
     break;
@@ -2709,9 +2703,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case SKIN_HAS_THEME:
         {
           CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
-          StringUtils::ToLower(theme);
           URIUtils::RemoveExtension(theme);
-          bReturn = theme.Equals(m_stringParameters[info.GetData1()]);
+          bReturn = StringUtils::EqualsNoCase(theme, m_stringParameters[info.GetData1()]);
         }
         break;
       case STRING_IS_EMPTY:
@@ -2794,7 +2787,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case SYSTEM_ALARM_LESS_OR_EQUAL:
         {
           int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
-          int timeCompare = atoi(m_stringParameters[info.GetData2()]);
+          int timeCompare = atoi(m_stringParameters[info.GetData2()].c_str());
           if (time > 0)
             bReturn = timeCompare >= time;
           else
@@ -2848,7 +2841,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
-          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2858,7 +2851,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
-          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2891,7 +2884,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SYSTEM_SETTING:
         {
-          if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
+          if ( StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], "hidewatched") )
           {
             CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
@@ -2937,7 +2930,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             if (window)
               content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
           }
-          bReturn = m_stringParameters[info.GetData2()].Equals(content);
+          bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData2()], content);
         }
         break;
       case CONTAINER_ROW:
@@ -2994,7 +2987,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             strContent = "livetv";
           if (m_currentFile->HasPVRChannelInfoTag())
             strContent = "livetv";
-          bReturn = m_stringParameters[info.GetData1()].Equals(strContent);
+          bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], strContent);
         }
         break;
       case CONTAINER_SORT_METHOD:
@@ -4341,9 +4334,19 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
 int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, bool caseSensitive /*= false*/)
 {
   // check to see if we have this parameter already
-  for (unsigned int i = 0; i < m_stringParameters.size(); i++)
-    if (parameter.Equals(m_stringParameters[i], caseSensitive))
-      return (int)i;
+  if (caseSensitive)
+  {
+    vector<string>::const_iterator i = find(m_stringParameters.begin(), m_stringParameters.end(), parameter);
+    if (i != m_stringParameters.end())
+      return (int)distance<vector<string>::const_iterator>(m_stringParameters.begin(), i);
+  }
+  else
+  {
+    for (unsigned int i = 0; i < m_stringParameters.size(); i++)
+      if (StringUtils::EqualsNoCase(parameter, m_stringParameters[i]))
+        return (int)i;
+  }
+
   // return the new offset
   m_stringParameters.push_back(parameter);
   return (int)m_stringParameters.size() - 1;
