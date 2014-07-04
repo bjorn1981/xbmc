@@ -90,7 +90,7 @@ public:
   CFileItem(void);
   CFileItem(const CFileItem& item);
   CFileItem(const CGUIListItem& item);
-  CFileItem(const CStdString& strLabel);
+  explicit CFileItem(const CStdString& strLabel);
   CFileItem(const CURL& path, bool bIsFolder);
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
@@ -110,8 +110,10 @@ public:
 
   const CURL GetURL() const;
   void SetURL(const CURL& url);
+  bool IsURL(const CURL& url) const;
   const CStdString &GetPath() const { return m_strPath; };
   void SetPath(const CStdString &path) { m_strPath = path; };
+  bool IsPath(const std::string& path) const;
 
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
@@ -535,7 +537,7 @@ public:
   enum CACHE_TYPE { CACHE_NEVER = 0, CACHE_IF_SLOW, CACHE_ALWAYS };
 
   CFileItemList();
-  CFileItemList(const CStdString& strPath);
+  explicit CFileItemList(const CStdString& strPath);
   virtual ~CFileItemList();
   virtual void Archive(CArchive& ar);
   CFileItemPtr operator[] (int iItem);
