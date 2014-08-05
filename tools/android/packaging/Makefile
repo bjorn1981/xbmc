@@ -30,6 +30,13 @@ ifeq ($(findstring arm,$(CPU)),arm)
 ARCH=arm
 endif
 
+# Check java version to correct source and target for javac
+ifneq ($(shell -java -version 2>&1 | grep - "1.7"),)
+JAVAC = javac -source 1.7 -target 1.7
+else
+JAVAC = javac -source 1.5 -target 1.5
+endif
+
 #older ndk x86
 GDBPATH=$(NDKROOT)/toolchains/$(ARCH)-$(GCC_VERSION)/prebuilt/gdbserver
 
@@ -58,8 +65,8 @@ multi: x86 arm
 
 package: extras
 	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-$(CPU)-unaligned.apk
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/xbmc/*.java
+	@$(JAVAC) -classpath $(ANDROIDJAR):xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
+	@$(JAVAC) -classpath $(ANDROIDJAR):xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/xbmc/*.java
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
 	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
 	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(CPU)-unaligned.apk androiddebugkey
