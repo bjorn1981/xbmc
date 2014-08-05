@@ -1,4 +1,4 @@
-package org.xbmc.xbmc;
+package net.matricom.xbmc;
 
 import android.app.NativeActivity;
 import android.content.Intent;

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.xbmc.xbmc"
-    android:versionCode="31"
+    package="net.matricom.xbmc"
+    android:versionCode="132100"
     android:versionName="13.2-RC1" >
+    <!-- versionCode is
+        [Major VERSION Minor VERSION (. removed)][Status(RC,Final][Status #][Beta VERSION (if exists)]
+    -->
 
     <!-- This is the platform API where NativeActivity was introduced. -->
     <uses-sdk android:minSdkVersion="14" />

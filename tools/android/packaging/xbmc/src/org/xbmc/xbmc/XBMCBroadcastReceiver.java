@@ -1,4 +1,4 @@
-package org.xbmc.xbmc;
+package net.matricom.xbmc;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package org.xbmc.xbmc;
+package net.matricom.xbmc;
 
 import android.graphics.SurfaceTexture;
 import android.graphics.SurfaceTexture.OnFrameAvailableListener;
