@@ -73,6 +73,18 @@ define make-xbmc-apk
 	@echo ${CL_RST}
 endef
 
+define install
+	# adb install -r new apk
+	@echo ${CL_YLW}
+	@$(shell adb install -r `find . -name xbmcapp*` > /dev/null 2>&1)
+	@echo ${CL_RST}
+endef
+
+define rm-previous
+	# remove previous apk
+	@rm -rf xbmcapp*
+endef
+
 all:
 	$(bootstrap)
 	$(configure)
@@ -100,7 +112,11 @@ xbmc:
 
 apk:
 	$(make-xbmc)
+	$(rm-previous)
 	$(make-xbmc-apk)
+
+install:
+	$(install)
 
 clobber:
 	make clean
