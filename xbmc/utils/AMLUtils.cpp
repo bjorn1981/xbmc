@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #include <string>
 
+#include "utils/AMLUtils.h"
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -154,24 +155,33 @@ void aml_permissions()
   }
 }
 
-int aml_get_cputype()
+enum AML_DEVICE_TYPE aml_get_device_type()
 {
-  static int aml_cputype = -1;
-  if (aml_cputype == -1)
+  static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;
+  if (aml_device_type == AML_DEVICE_TYPE_UNINIT)
   {
     std::string cpu_hardware = g_cpuInfo.getCPUHardware();
 
     // default to AMLogic M1
-    aml_cputype = 1;
-    if (cpu_hardware.find("MESON-M3") != std::string::npos)
-      aml_cputype = 3;
-    else if (cpu_hardware.find("MESON3") != std::string::npos)
-      aml_cputype = 3;
+    if (cpu_hardware.find("MESON-M1") != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M1;
+    else if (cpu_hardware.find("MESON-M3") != std::string::npos
+        || cpu_hardware.find("MESON3") != std::string::npos)
+      aml_device_type = AML_DEVICE_TYPE_M3;
     else if (cpu_hardware.find("Meson6") != std::string::npos)
-      aml_cputype = 6;
+      aml_device_type = AML_DEVICE_TYPE_M6;
+    else if (cpu_hardware.find("Meson8") != std::string::npos)
+    {
+      if (cpu_hardware.find("Meson8B") == std::string::npos)
+        aml_device_type = AML_DEVICE_TYPE_M8;
+      else
+        aml_device_type = AML_DEVICE_TYPE_M8B;
+    }
+    else
+      aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
   }
 
-  return aml_cputype;
+  return aml_device_type;
 }
 
 void aml_cpufreq_min(bool limit)
@@ -179,7 +189,8 @@ void aml_cpufreq_min(bool limit)
 // do not touch scaling_min_freq on android
 #if !defined(TARGET_ANDROID)
   // only needed for m1/m3 SoCs
-  if (aml_get_cputype() <= 3)
+  if ( aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN
+    && aml_get_device_type() <= AML_DEVICE_TYPE_M3)
   {
     int cpufreq = 300000;
     if (limit)
@@ -192,7 +203,7 @@ void aml_cpufreq_min(bool limit)
 
 void aml_cpufreq_max(bool limit)
 {
-  if (!aml_wired_present() && aml_get_cputype() > 3)
+  if (!aml_wired_present() && aml_get_device_type() == AML_DEVICE_TYPE_M6)
   {
     // this is a MX Stick, they cannot substain 1GHz
     // operation without overheating so limit them to 800MHz.
@@ -210,8 +221,8 @@ void aml_set_audio_passthrough(bool passthrough)
   if (aml_present())
   {
     // m1 uses 1, m3 and above uses 2
-    int raw = aml_get_cputype() < 3 ? 1:2;
-    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? raw:0);
+    int raw = aml_get_device_type() == AML_DEVICE_TYPE_M1 ? 1 : 2;
+    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? raw : 0);
   }
 }
 
