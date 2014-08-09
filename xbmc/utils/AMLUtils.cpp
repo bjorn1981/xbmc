@@ -218,7 +218,9 @@ void aml_cpufreq_max(bool limit)
 
 void aml_set_audio_passthrough(bool passthrough)
 {
-  if (aml_present())
+  if ( aml_present()
+    && aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN
+    && aml_get_device_type() <= AML_DEVICE_TYPE_M8)
   {
     // m1 uses 1, m3 and above uses 2
     int raw = aml_get_device_type() == AML_DEVICE_TYPE_M1 ? 1 : 2;
