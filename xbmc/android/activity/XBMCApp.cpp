@@ -87,6 +87,7 @@ ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 int CXBMCApp::m_initialVolume = 0;
+int CXBMCApp::m_savedVolume = -1;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 
@@ -133,6 +134,9 @@ void CXBMCApp::onResume()
   batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
   registerReceiver(*this, batteryFilter);
 
+  if (m_savedVolume != -1)
+    SetSystemVolume(m_saved_Volume);
+
   // Clear the applications cache. We could have installed/deinstalled apps
   {
     CSingleLock lock(m_applicationsMutex);
@@ -144,7 +148,8 @@ void CXBMCApp::onPause()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  // Restore volume
+  m_savedVolume = GetSystemVolume();
+  // Restore OS volume
   SetSystemVolume(m_initialVolume);
 
   unregisterReceiver(*this);
