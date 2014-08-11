@@ -245,6 +245,12 @@ public class Splash extends Activity {
   }
 
   @Override
+  public void onBackPressed() {
+    // block escaping from 1st run
+    // It can cause issues with lib extraction
+  }
+
+  @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
