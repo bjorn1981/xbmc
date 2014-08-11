@@ -103,6 +103,8 @@ public:
   static void SetSystemVolume(int val);
 
   static int GetDPI();
+  bool WaitForMedia(int timeout);
+  static bool isLauncher() { return m_runAsLauncher; };
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
@@ -125,11 +127,14 @@ private:
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;
+  CEvent m_mediaMounted;
   static CCriticalSection m_applicationsMutex;
   static std::vector<androidPackage> m_applications;
 
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
+
+  static bool m_runAsLauncher;
 
   void XBMC_Pause(bool pause);
   void XBMC_Stop();

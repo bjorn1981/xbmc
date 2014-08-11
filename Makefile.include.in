@@ -1,3 +1,7 @@
+XBMC_APPNAME=xbmc.bin
+XBMC_LIBNAME=libxbmc.so
+XBMC_LIBFLAG=-lxbmc
+
 AR=@AR@
 ARFLAGS=crus
 RM=rm -rf
