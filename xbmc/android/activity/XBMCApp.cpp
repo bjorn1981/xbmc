@@ -100,7 +100,8 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
 {
   m_activity = nativeActivity;
   m_firstrun = true;
-  m_exiting=false;
+  m_exiting  = false;
+  m_inFront  = true;
   if (m_activity == NULL)
   {
     android_printf("CXBMCApp: invalid ANativeActivity instance");
@@ -144,6 +145,11 @@ void CXBMCApp::onResume()
     CSingleLock lock(m_applicationsMutex);
     m_applications.clear();
   }
+
+  if (!m_firstrun && m_inFront)
+    g_windowManager.ActivateWindow(WINDOW_HOME);
+
+  m_inFront = true;
 }
 
 void CXBMCApp::onPause()
@@ -160,6 +166,7 @@ void CXBMCApp::onPause()
 void CXBMCApp::onStop()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
+  m_inFront = false;
 }
 
 void CXBMCApp::onDestroy()

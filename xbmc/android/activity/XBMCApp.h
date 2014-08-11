@@ -44,7 +44,7 @@ struct androidIcon
   unsigned int width;
   unsigned int height;
   void *pixels;
-};  
+};
 
 struct androidPackage
 {
@@ -83,7 +83,7 @@ public:
   static const ANativeWindow** GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
-  
+
   static int GetBatteryLevel();
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
@@ -126,6 +126,7 @@ private:
   static int m_savedVolume;
   bool m_firstrun;
   bool m_exiting;
+  bool m_inFront;
   pthread_t m_thread;
   CEvent m_mediaMounted;
   static CCriticalSection m_applicationsMutex;
