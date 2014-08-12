@@ -36,7 +36,6 @@ int aml_set_sysfs_int(const char *path, const int val);
 int aml_get_sysfs_int(const char *path);
 
 bool aml_present();
-void aml_permissions();
 bool aml_hw3d_present();
 bool aml_supports_stereo(const int mode);
 void aml_set_stereo_mode(const int mode, const int view);

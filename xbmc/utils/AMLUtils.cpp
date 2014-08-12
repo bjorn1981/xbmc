@@ -288,33 +288,6 @@ bool aml_wired_present()
   return has_wired == 1;
 }
 
-void aml_permissions()
-{
-  if (!aml_present())
-    return;
-
-  // most all aml devices are already rooted.
-  int ret = system("ls /system/xbin/su");
-  if (ret != 0)
-  {
-    CLog::Log(LOGWARNING, "aml_permissions: missing su, playback might fail");
-  }
-  else
-  {
-    // certain aml devices have 664 permission, we need 666.
-    system("su -c chmod 666 /sys/class/video/axis");
-    system("su -c chmod 666 /sys/class/video/screen_mode");
-    system("su -c chmod 666 /sys/class/video/disable_video");
-    system("su -c chmod 666 /sys/class/tsync/pts_pcrscr");
-    system("su -c chmod 666 /sys/class/audiodsp/digital_raw");
-    system("su -c chmod 666 /sys/class/ppmgr/ppmgr_3d_mode");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
-    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-    CLog::Log(LOGINFO, "aml_permissions: permissions changed");
-  }
-}
-
 enum AML_DEVICE_TYPE aml_get_device_type()
 {
   static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;

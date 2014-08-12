@@ -62,7 +62,6 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 
 void CEGLNativeTypeAmlogic::Initialize()
 {
-  aml_permissions();
   aml_cpufreq_min(true);
   aml_cpufreq_max(true);
   return;
