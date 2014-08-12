@@ -200,7 +200,6 @@ void CGUIDialogVideoSettings::CreateSettings()
   stereomode.push_back(make_pair(RENDER_STEREO_MODE_SPLIT_VERTICAL  , 36504));
   AddSpin(VIDEO_SETTINGS_STEREOSCOPICMODE  , 36535, &CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode, stereomode);
   AddBool(VIDEO_SETTINGS_STEREOSCOPICINVERT, 36536, &CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert);
-
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);

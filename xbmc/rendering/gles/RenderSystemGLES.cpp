@@ -23,6 +23,13 @@
 
 #if HAS_GLES == 2
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#ifdef HAS_LIBAMCODEC
+#include "utils/AMLUtils.h"
+#endif
+#endif
+
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
@@ -656,17 +663,23 @@ GLint CRenderSystemGLES::GUIShaderGetCoord0Matrix()
   return -1;
 }
 
+void CRenderSystemGLES::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
+{
+  CRenderSystemBase::SetStereoMode(mode, view);
+
+#if defined(HAS_LIBAMCODEC)
+  if (aml_present())
+    aml_set_stereo_mode(mode, view);
+#endif
+}
+
 bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
 {
-  switch(mode)
-  {
-    case RENDER_STEREO_MODE_INTERLACED:
-      if (g_sysinfo.HasHW3DInterlaced())
-        return true;
-
-    default:
-      return CRenderSystemBase::SupportsStereo(mode);
-  }
+#if defined(HAS_LIBAMCODEC)
+  if (aml_present())
+    return aml_supports_stereo(mode);
+#endif
+  return CRenderSystemBase::SupportsStereo(mode);
 }
 
 #endif

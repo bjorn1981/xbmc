@@ -117,7 +117,6 @@ public:
   bool IsAppleTV2();
   bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
-  bool HasHW3DInterlaced();
   static bool IsWindowsVersion(WindowsVersion ver);
   static bool IsWindowsVersionAtLeast(WindowsVersion ver);
   static WindowsVersion GetWindowsVersion();
