@@ -46,8 +46,9 @@ public class Splash extends Activity {
   private String mCpuinfo = "";
   private String mErrorMsg = "";
 
-  private ProgressBar mProgress = null;
-  private TextView mTextView = null;
+  private ProgressBar mProgressBar = null;
+  private TextView mProgressText = null;
+  private TextView mStampText;
   private State mState = State.Uninitialized;
   public AlertDialog myAlertDialog;
 
@@ -103,8 +104,8 @@ public class Splash extends Activity {
       try {
         zip = new ZipFile(sPackagePath);
         Enumeration<? extends ZipEntry> entries = zip.entries();
-        mProgress.setProgress(0);
-        mProgress.setMax(zip.size());
+        mProgressBar.setProgress(0);
+        mProgressBar.setMax(zip.size());
 
         mState = State.Caching;
         publishProgress(mProgressStatus);
@@ -181,17 +182,17 @@ public class Splash extends Activity {
     protected void onProgressUpdate(Integer... values) {
       switch (mState) {
       case Checking:
-        mSplash.mTextView.setText("Checking package validity...");
-        mSplash.mProgress.setVisibility(View.INVISIBLE);
+        mSplash.mProgressText.setText("Checking package validity...");
+        mSplash.mProgressBar.setVisibility(View.INVISIBLE);
         break;
       case Caching:
-        mSplash.mTextView.setText("Preparing for first run. Please wait...");
-        mSplash.mProgress.setVisibility(View.VISIBLE);
-        mSplash.mProgress.setProgress(values[0]);
+        mSplash.mProgressText.setText("Preparing for first run. Please wait...");
+        mSplash.mProgressBar.setVisibility(View.VISIBLE);
+        mSplash.mProgressBar.setProgress(values[0]);
         break;
       case StartingXBMC:
-        mSplash.mTextView.setText("Starting XBMC...");
-        mSplash.mProgress.setVisibility(View.INVISIBLE);
+        mSplash.mProgressText.setText("Starting XBMC...");
+        mSplash.mProgressBar.setVisibility(View.INVISIBLE);
         break;
       }
     }
@@ -299,12 +300,13 @@ public class Splash extends Activity {
       startXBMC();
       return;
     }
-    
+
     setContentView(R.layout.activity_splash);
 
-    mProgress = (ProgressBar) findViewById(R.id.progressBar1);
-    mTextView = (TextView) findViewById(R.id.textView1);
-    
+    mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
+    mProgressText = (TextView) findViewById(R.id.progress_text);
+    mStampText = (TextView) findViewById(R.id.bits_string);
+
     if (mState == State.InError) {
       showErrorDialog(this, "Error", mErrorMsg);
       return;

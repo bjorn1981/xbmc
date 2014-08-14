@@ -3,5 +3,6 @@
 
     <string name="hello">bruhahaha</string>
     <string name="app_name">XBMC forked by Matricom</string>
+    <string name="bits_string_text">forked by Matricom</string>
 
 </resources>
